@@ -1,30 +1,60 @@
 class Fish {
-	constructor(headX, headY, faceTo = 'left') {
+	constructor(headX, headY, direction = 1) {
 		this.speed = 1.5;
-		this.width = 30;
-		this.size = 25;
-		this.faceTo = faceTo;
-		this.direction = this.faceTo === 'left' ? -1 : 1;
+		this.width = 105;
+		this.height = 78;
+		this.direction = direction;
 		this.headX = headX;
 		this.headY = headY;
+		this.index = 0;
+		this.count = 0;
+		this.imgs = null;
+
+		this.init();
+	}
+	init() {
+		this.switchAnimation('swim');
+	}
+	switchAnimation(action) {
+		let len = 0;
+		switch(action) {
+			case 'swim':
+				len = 5;
+				break;
+			case 'touched':
+				len = 2;
+		}
+
+		let imgs = [];
+		for (let i = 1; i <= len; i++) {
+			const img = new Image();
+			img.src= `assets/fish/${action}/${i}.png`;
+			imgs.push(img);
+		}
+		this.imgs = imgs;
 	}
 	draw() {
-		this.headX = this.headX + this.speed * this.direction;
+		this.headX = this.headX + this.speed * this.direction * -1;
+		const speed = 0.1;
+		this.count += speed;
+		if (this.index >= this.imgs.length - 1) {
+			this.count = 0;
+		}
+		this.index = Math.floor(this.count);
 
-		ctx.fillStyle = 'grey';
-		ctx.beginPath();
-		ctx.moveTo(
-			this.faceTo === 'left' 
-				? this.headX - this.width 
-				: this.headX + this.width, 
-			this.headY
+		ctx.save();
+		ctx.scale(1 * this.direction, 1);
+		ctx.drawImage(
+			this.imgs[this.index], 
+			this.headX * this.direction, 
+			this.headY,
+			this.width,
+			this.height
 		);
-	    ctx.lineTo(this.headX, this.headY - this.size);
-	    ctx.lineTo(this.headX, this.headY + this.size);
-	    ctx.fill();
+		ctx.restore();
 	}
 	// 是否存活
 	isAlive() {
-		return this.headX >= 0 && this.headX <= canvasWidth;
+		return this.headX + this.width >= 0 && this.headX <= canvasWidth + this.width;
 	}
 }

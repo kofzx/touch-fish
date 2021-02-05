@@ -1,8 +1,9 @@
+const CANVAS_WIDTH = 375;
 const CANVAS_HEIGHT = 250;
 
 // init
 const canvas = document.createElement('canvas');
-canvas.width = window.innerWidth;
+canvas.width = CANVAS_WIDTH;
 canvas.height = CANVAS_HEIGHT;
 document.body.appendChild(canvas);
 
